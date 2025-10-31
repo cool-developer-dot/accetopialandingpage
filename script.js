@@ -140,14 +140,47 @@ class MobileNav {
     init() {
         const navToggle = document.getElementById('navToggle');
         const navMenu = document.getElementById('navMenu');
+        const navOverlay = document.getElementById('navOverlay');
 
         if (navToggle && navMenu) {
+            // Toggle menu on hamburger click
             navToggle.addEventListener('click', () => {
                 navMenu.classList.toggle('active');
                 navToggle.classList.toggle('active');
+                if (navOverlay) {
+                    navOverlay.classList.toggle('active');
+                }
+                
+                // Prevent body scroll when menu is open
+                document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
                 
                 // Animate hamburger lines
                 this.animateHamburger(navToggle);
+            });
+
+            // Close menu when clicking overlay
+            if (navOverlay) {
+                navOverlay.addEventListener('click', () => {
+                    navMenu.classList.remove('active');
+                    navToggle.classList.remove('active');
+                    navOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                    this.animateHamburger(navToggle);
+                });
+            }
+
+            // Close menu when clicking a nav link
+            const navLinks = navMenu.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    navMenu.classList.remove('active');
+                    navToggle.classList.remove('active');
+                    if (navOverlay) {
+                        navOverlay.classList.remove('active');
+                    }
+                    document.body.style.overflow = '';
+                    this.animateHamburger(navToggle);
+                });
             });
         }
     }
@@ -155,9 +188,9 @@ class MobileNav {
     animateHamburger(toggle) {
         const lines = toggle.querySelectorAll('.hamburger-line');
         if (toggle.classList.contains('active')) {
-            lines[0].style.transform = 'rotate(45deg) translateY(7px)';
+            lines[0].style.transform = 'rotate(45deg) translateY(9px)';
             lines[1].style.opacity = '0';
-            lines[2].style.transform = 'rotate(-45deg) translateY(-7px)';
+            lines[2].style.transform = 'rotate(-45deg) translateY(-9px)';
         } else {
             lines[0].style.transform = 'none';
             lines[1].style.opacity = '1';
